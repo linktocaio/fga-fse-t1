@@ -1,4 +1,11 @@
-import socket, select
+import socket, select, json, sys
+qwe = 1
+def display() :
+	global qwe
+	qwe +=1 
+	you="\33[33m\33[1m"+" You: "+"\33[0m" + str(qwe)
+	sys.stdout.write(you)
+	sys.stdout.flush()
 
 #Function to send message to all connected clients
 def send_to_all (sock, message):
@@ -33,8 +40,9 @@ if __name__ == "__main__":
 	print("[i] Server Online")
 
 	while 1:
+		socket_list = [sys.stdin] + connected_list
         # Get the list sockets which are ready to be read through select
-		rList, wList, error_sockets = select.select(connected_list, [], [])
+		rList, wList, error_sockets = select.select(socket_list, [], [], 0.5)
 		# send_to_all(server_socket, "test")
 
 		for sock in rList:
@@ -42,14 +50,17 @@ if __name__ == "__main__":
 			if sock == server_socket:
 				# Handle the case in which there is a new connection recieved through server_socket
 				sockfd, addr = server_socket.accept()
-				name = sockfd.recv(buffer).decode()
+
+				new_conn_conf_file = sockfd.recv(buffer).decode()
+				new_client_conf = json.loads(new_conn_conf_file)
+
 				connected_list.append(sockfd)
 				record[addr] = ""
 				# print("record and conn list ", record, connected_list)
                 
                 #if repeated username
-				if name in record.values():
-					sockfd.send("[-] Andar com essas configuracoes ja conectado ao servidor".encode())
+				if new_client_conf in record.values():
+					sockfd.send(f"\n[-] Andar com essas configuracoes ja conectado ao servidor, {addr}\n".encode())
 					del record[addr]
 					connected_list.remove(sockfd)
 					sockfd.close()
@@ -57,8 +68,8 @@ if __name__ == "__main__":
 
 				else:
                     #add name and address
-					record[addr]=name
-					print("[+] Novo andar conectado: (%s, %s)" % addr," [",record[addr],"]")
+					record[addr] = new_client_conf
+					print("\n[+] Novo andar conectado: (%s, %s)" % addr," [",record[addr]["nome"],"]\n")
 					# sockfd.send("\33[32m\r\33[1m Welcome to chat room. Enter 'tata' anytime to exit\n\33[0m".encode())
 					# send_to_all(sockfd, "\33[32m\33[1m\r "+name+" joined the conversation \n\33[0m")
 
@@ -73,7 +84,7 @@ if __name__ == "__main__":
                     
                     #get addr of client sending the message
 					i, p = sock.getpeername()
-					print("[+] Comando recebido de (%s, %s)" % (i,p)," [",record[(i,p)],"] :", data)
+					print("[+] Comando recebido de (%s, %s)" % (i,p)," [",record[(i,p)]["nome"],"] :", data)
 
 					# if data == "tata":
 					# 	msg="\r\33[1m"+"\33[31m "+record[(i,p)]+" left the conversation \33[0m\n"
@@ -90,12 +101,19 @@ if __name__ == "__main__":
             
                 #abrupt user exit
 				except:
-					(i, p) = sock.getpeername()
-					# send_to_all(sock, "\r\33[31m \33[1m"+record[(i,p)]+" left the conversation unexpectedly\33[0m\n")
-					print("[-] Andar desconectado: (%s, %s)" % addr," [",record[(i,p)],"]")
-					del record[(i, p)]
-					connected_list.remove(sock)
-					sock.close()
-					continue
+					try:
+						(i, p) = sock.getpeername()
+						# send_to_all(sock, "\r\33[31m \33[1m"+record[(i,p)]+" left the conversation unexpectedly\33[0m\n")
+						print("\n[-] Andar desconectado: (%s, %s)" % addr," [",record[(i,p)]["nome"],"]\n")
+						del record[(i, p)]
+						connected_list.remove(sock)
+						sock.close()
+						continue
+					
+					#send mensage to clients
+					except:
+						msg=sys.stdin.readline()
+						send_to_all(sock, msg)
+		# display()
 
 	server_socket.close()

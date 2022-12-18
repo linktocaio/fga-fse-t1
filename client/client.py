@@ -1,4 +1,19 @@
-import socket, select, string, sys, json, os
+import socket, select, string, sys, json, os,heapq
+
+
+class FilaDePrioridade:
+
+	def __init__(self):
+		self._fila = []
+		self._indice = 0
+
+	def inserir(self, item, prioridade):
+		heapq.heappush(self._fila, (-prioridade, self._indice, item))
+		self._indice += 1
+
+	def remover(self):
+		return heapq.heappop(self._fila)[-1]
+
 
 #Helper function (formatting)
 def display() :
@@ -21,11 +36,11 @@ def main():
 
     # ip_server = local_config["ip_servidor_central"]
     ip_server = "127.0.0.1"
-    port_server = local_config["porta_servidor_central"]
+    # port_server = local_config["porta_servidor_central"]
     port_server = 5001
-    
+
     #asks for user name
-    name = input("\33[34m\33[1m CREATING NEW ID:\n Enter username: \33[0m")
+    # name = input("\33[34m\33[1m CREATING NEW ID:\n Enter username: \33[0m")
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.settimeout(2)
     
@@ -37,9 +52,13 @@ def main():
         sys.exit()
 
     #if connected
-    s.send(name.encode())
+    # s.send(name.encode())
+    s.send(json.dumps(local_config, ensure_ascii=False).encode())
     display()
 
+    fila = FilaDePrioridade()
+
+    i = ""
 
     while 1:
         socket_list = [s]
@@ -63,11 +82,12 @@ def main():
                 msg = sys.stdin.readline()
                 s.send(msg.encode())
                 display()
+         
+        i = i + "a"
+        fila.inserir(f"{i}\n", 1)
+        s.send(fila.remover().encode())
 
-        s.send("text\n".encode())
-        s.send("text2\n".encode())
-
-        display()
+        # display()
 
         
 
