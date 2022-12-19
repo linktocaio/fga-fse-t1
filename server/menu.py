@@ -1,153 +1,136 @@
-
-_txt_init = '''\n
-[1] Carregar jogo
-[2] Novo Jogo
-[0] Sair\n
-'''
-
-_txt_menu_jogador = '''\n
-[1] Andar
-[2] Inventario
-[3] Craft
-[0] Sair
-'''
-
-_txt_otp_invalida = '\n[-] Digite uma opcao valida!'
+import conn
 
 def print_info(temperature, humidity, people_counter):
-    print("\n====== Dados ======\n")
-    print("Temperatura: %.1f\n", temperature)
-    print("Umidade: %.1f\n", humidity)
-    print("Contador de Pessoas: %d\n", people_counter)
+	print("\n====== Dados ======\n")
+	print("Temperatura: ", temperature)
+	print("Umidade: ", humidity)
+	print("Contador de Pessoas: ", people_counter)
+	print("\n====== ===== ======\n")
 
 
 def clear():
 	print(chr(27) + "[2J")
 
-
-def menu_init():
+def main():
 	while True:
+		msg = ""
+		i = 0
+		foo = {}
 		clear()
-		print_info()
-		opt_init = -1
-		jogador  = -1
-		jogador_novo = True
-		opt_init = input(_txt_init).strip()
+		print_info(0,0,0)
 
-		if opt_init == '1':
-			jogador = menu_carregar_jogo()
-			jogador_novo = False
+		main_list = conn.record.copy()
+
+		for client in main_list:
+			foo[main_list[client]["nome"]] = main_list[client]
+
+		if len(foo) > 0:
+			print("configuracoes do andar: ")
+
+		for key in foo.keys():
+			print(i+1, "- %s" % key)
+			i+=1
+		
+		print("\n0 - Atualizar")
+		print("X - Sair\n")
+
+		opt_main = input()
+		try: 
+			opt_main = int(opt_main)
+			if opt_main > i or opt_main < 0:
+				clear()
+				input("digite opcao valida")
+				continue
+			if opt_main == 0:
+				continue
+
+			keys = list(foo.keys())
+			menu_andar(foo[keys[opt_main-1]], f"{keys[opt_main-1]};")
 			
-			if jogador != -1:
-				jogo_init(jogador, jogador_novo)
-			continue
-
-		if opt_init == '2':
-			jogador = menu_novo_jogo()
-			jogador_novo = True
-
-			if jogador != -1:
-				jogo_init(jogador, jogador_novo)
-			continue
-
-		if opt_init == '0':
-			exit()
-		
-		print(_txt_otp_invalida)
-		input("[i] precione enter para continuar")
-
-
-def menu_carregar_jogo():
-	jogos_salvos = []
-	ids = []
-	opt_carregar = -1
-	clear()
-
-	try:
-		jogos_salvos = bd.get_jogadores()
-	except:
-		print('\n[-] Nao foi possivel carregar lista de jogos salvos')
-		input("[i] precione enter para continuar")
-		return -1
-
-	if jogos_salvos:
-		for jogador in jogos_salvos:
-			ids.append(jogador[0])
-			print(f'[{jogador[0]}] {jogador[1]}')
-		print(f'\n[0] Cancelar')
-
-	else:
-		clear()
-		print('\n[i] Voce nao possui jogos salvos!')
-		input("[i] precione enter para continuar")
-		return -1
-
-	while True:
-		opt_carregar = input().strip()
-
-		try:
-			opt_carregar = abs(int(opt_carregar))
 		except:
-			print(_txt_otp_invalida)
-			continue
+			if opt_main == "x":
+				break
+			# clear()
+			# input("except")
+			
 
-		if opt_carregar == 0:
-			return -1 
-		
-		if  ids.__contains__(opt_carregar):
+def menu_andar(andar, msg):
+	clear()
+	tipos = []
+	
+	for tipo in andar.values():
+		if type(tipo) == list:
+			for item in tipo:
+				if item['type'] not in tipos:
+					tipos.append(item['type'])
+
+	i = 0
+	for item in tipos:
+		print(i+1, "- %s" % item)
+		i+=1
+
+	print("\n0 - Voltar\n")
+
+	try: 
+		opt_andar = int(input())
+
+		if opt_andar > i or opt_andar < 0:
 			clear()
-			print('[+] Carregango jogo...')
-			input("[i] precione enter para continuar")
-			return bd.get_jogador_id(opt_carregar)
+			if opt_andar != 0:
+				input("digite opcao valida")
+			return
 		
-		print(_txt_otp_invalida)
-		
+		if opt_andar == 0:
+			return
 
-def menu_novo_jogo():
-	while True:
-		clear()
-		nome_jogador = input(
-			'[?] Nome do peronagem: ').strip()
+		items = []
+		for tipo in andar.values():
+			if type(tipo) == list:
+				for item in tipo:
+					if item['type'] == tipos[opt_andar-1]:
+						items.append(item)
 
-		if nome_jogador == '':
-			print('[-] Nenhum nome inserido, jogador nao criado')
-			input("[i] precione enter para continuar")
-			return -1
+		menu_tipo(items, msg)
+	except:
+		pass
+		# clear()
+		# input("except")
+	
 
-		jogador = bd.novo_jogador(nome_jogador)
-		
-		if jogador == -1:
-			print('[-] Error ao criar novo peronagem. Tente novamente\n')
-			input("[i] precione enter para continuar")
-			return -1
+def menu_tipo(items, msg):
+	clear()
+	i = 0
+	for item in items:
+		print(i+1, "- %s" % item["tag"], "- %s" % item["state"])
+		i+=1
 
-		print('[+] Carregango jogo...')
-		input("[i] precione enter para continuar")
-		return jogador
+	print("\n0 - Voltar\n")
 
-def menu_jogador(jogador):
+	opt_tipo = input("> ")
+	try: 
+		opt_tipo = int(opt_tipo)
+		if opt_tipo > i or opt_tipo < 0:
+			clear()
+			if opt_tipo != 0:
+				input("digite opcao valida")
+			return
+			
+		if opt_tipo == 0:
+			return
 
-	while True:
-		clear()
-		posicao_jogador = bd.get_posicao_jogador(jogador.id)
-		print(posicao_jogador.descricao)
-		jogador = bd.get_jogador_id(jogador.id)
-		print('\n[i] Vida: ' + str(jogador.vida))
+		item_aux = items[opt_tipo-1].copy()
 
-		print(_txt_menu_jogador)
-		acao = input('[?] ').strip()
+		if item_aux["state"] == "1":
+			item_aux["state"] = "0"
 
-		if acao == '1':
-			player.andar(jogador, posicao_jogador)
-			continue
+		elif item_aux["state"] == "0":
+			item_aux["state"] = "1"
 
-		if acao == '2':
-			player.inventario(jogador)
-			continue
+		msg = f"{msg}{item_aux};"
 
-		if acao == '3':
-			player.craft(jogador, posicao_jogador)
-			continue
+		conn.fila_prioridade.inserir(msg, 1)
 
-		if acao == '0':
-			return False
+	except:
+		pass
+		# clear()
+		# input("except")
