@@ -4,15 +4,6 @@ connected_list = []
 server_socket = None
 record = {}
 
-qwe = 1
-def display() :
-	global qwe
-	qwe +=1 
-	you="\33[33m\33[1m"+" You: "+"\33[0m" + str(qwe)
-	sys.stdout.write(you)
-	sys.stdout.flush()
-
-
 class FilaDePrioridade:
 
 	def __init__(self):
@@ -161,6 +152,4 @@ def server_init():
 						# msg=sys.stdin.readline()
 						# send_to_all(sock, msg)
 						
-		# display()
-
 	server_socket.close()

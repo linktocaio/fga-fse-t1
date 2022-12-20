@@ -91,12 +91,15 @@ def main():
 					print('[-] Erro, voce foi desconectado do servidor inesperadamente')
 					sys.exit()
 				else :
+					print("+ rec: " + data)
 					handle_recv(data, local_config, fila_prioridade)
 
 
 		ctrl.ctrl(fila_prioridade, local_config)
 		if not fila_prioridade.isEmpty():
-			s.send(fila_prioridade.remover().encode())
+			msg = fila_prioridade.remover()
+			s.send(msg.encode())
+			print("+ send :" + msg)
 
 
 if __name__ == "__main__":
