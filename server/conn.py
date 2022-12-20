@@ -69,7 +69,7 @@ def server_init():
 	# List to keep track of socket descriptors
 	
 	buffer = 4096
-	port = 5001
+	port = 10442
 
 	server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) # reuse port after ctrl+c

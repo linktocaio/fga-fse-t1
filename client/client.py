@@ -60,7 +60,7 @@ def main():
 	# ip_server = local_config["ip_servidor_central"]
 	ip_server = "127.0.0.1"
 	# port_server = local_config["porta_servidor_central"]
-	port_server = 5001
+	port_server = 10442
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.settimeout(2)

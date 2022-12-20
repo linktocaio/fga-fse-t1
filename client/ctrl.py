@@ -1,4 +1,6 @@
 import time
+import onoff
+
 
 time_start = time.time()
 time_temp = time.time()
@@ -28,7 +30,7 @@ def handle_lampada(data_dict, local_config, fila_prioridade):
     msg = ""
     # input(data_dict)
 
-    if True: #retorno ligar_lampada()
+    if onoff.turn_led(data_dict): #retorno ligar_lampada()
         item_aux = data_dict.copy()
 
         if item_aux["state"] == "1":
