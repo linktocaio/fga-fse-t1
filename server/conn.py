@@ -54,6 +54,13 @@ def update(andar, msg):
 	if len(q) == 2:
 		menu.temp = q[0]
 		menu.hum = q[1]
+		return
+
+	if d["type"] == "fumaca":
+		if d["state"] == "1":
+			print("[!] Sensor fumaca ativado")
+		else:
+			print("[!] Sensor fumaca desativado")
 
 def server_init():
 
