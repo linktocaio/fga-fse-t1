@@ -52,10 +52,11 @@ def get_TH(local_config):
 def get_smoke(local_config):
 	pin = local_config["inputs"]
 
-	for a in pin["inputs"]:
+	for a in pin:
 		if a["type"] == "fumaca":
 			pin  = a["gpio"]
 
-	return InputDevice(pin).value()
+	b = InputDevice(pin)
+	return b.value
 
 	

@@ -31,7 +31,7 @@ def ctrl(fila_prioridade, local_config):
         msg = local_config["nome"] + ";"
 
         pin = local_config["inputs"]
-        for a in pin["inputs"]:
+        for a in pin:
             if a["type"] == "fumaca":
                 to_send = a
 
