@@ -1,4 +1,4 @@
-import socket, select, json, sys, heapq, menu
+import socket, select, json, sys, heapq, menu, log
 
 connected_list = []
 server_socket = None
@@ -76,6 +76,7 @@ def server_init():
 	connected_list.append(server_socket)
 
 	print("[i] Server Online")
+	log.logger.info("[i] Server Online")
 
 	while 1:
 		socket_list = [sys.stdin] + connected_list
@@ -99,6 +100,7 @@ def server_init():
                 #if repeated username
 				if new_client_conf in record.values():
 					sockfd.send(f"\n[-] Andar com essas configuracoes ja conectado ao servidor, {addr}\n".encode())
+					log.logger.info(f"\n[-] Andar com essas configuracoes ja conectado ao servidor, {addr}")
 					del record[addr]
 					connected_list.remove(sockfd)
 					sockfd.close()
@@ -108,6 +110,7 @@ def server_init():
                     #add name and address
 					record[addr] = new_client_conf
 					print("\n[+] Novo andar conectado: (%s, %s)" % addr," [",record[addr]["nome"],"]\n")
+					log.logger.info("[+] Novo andar conectado: " + str(addr) + " [" + record[addr]["nome"] +"]")
 					# sockfd.send("\33[32m\r\33[1m Welcome to chat room. Enter 'tata' anytime to exit\n\33[0m".encode())
 					# send_to_all(sockfd, "\33[32m\33[1m\r "+name+" joined the conversation \n\33[0m")
 
@@ -122,6 +125,7 @@ def server_init():
                     
                     #get addr of client sending the message
 					i, p = sock.getpeername()
+					log.logger.info("[+] Mensagem recebida:" + str((i,p)) + " [" + record[(i,p)]["nome"] +"]")
 					update(record[(i,p)], data1)
 					# print("[+] Comando recebido de (%s, %s)" % (i,p)," [",record[(i,p)]["nome"],"] :", data)
 					
@@ -144,6 +148,7 @@ def server_init():
 						(i, p) = sock.getpeername()
 						# send_to_all(sock, "\r\33[31m \33[1m"+record[(i,p)]+" left the conversation unexpectedly\33[0m\n")
 						print("\n[-] Andar desconectado: (%s, %s)" % addr," [",record[(i,p)]["nome"],"]\n")
+						log.logger.info("[-] Andar desconectado: " + str(addr) + " [" + record[(i,p)]["nome"] + "]")
 						del record[(i, p)]
 						connected_list.remove(sock)
 						sock.close()
