@@ -1,4 +1,4 @@
-from gpiozero import LED
+from gpiozero import LED, InputDevice
 import Adafruit_DHT
 
 def turn_led(data_dict):
@@ -48,3 +48,14 @@ def get_TH(local_config):
 	if humidity is not None and temp is not None:
 		return str(temp) + "," + str(humidity)
 	return "erro"
+
+def get_smoke(local_config):
+	pin = local_config["inputs"]
+
+	for a in pin["inputs"]:
+		if a["type"] == "fumaca":
+			pin  = a["gpio"]
+
+	return InputDevice(pin).value()
+
+	
