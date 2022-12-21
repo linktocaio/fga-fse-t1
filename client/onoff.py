@@ -59,4 +59,14 @@ def get_smoke(local_config):
 	b = InputDevice(pin)
 	return b.value
 
-	
+def get_alarm(local_config):
+	pin = local_config["inputs"]
+
+	for a in pin:
+		if a["type"] == "janela" or a["type"] == "porta":
+			pin  = a["gpio"]
+			if InputDevice(pin).value == 1:
+				return 1
+
+	return 0
+

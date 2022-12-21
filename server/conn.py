@@ -61,6 +61,13 @@ def update(andar, msg):
 			print("[!] Sensor fumaca ativado")
 		else:
 			print("[!] Sensor fumaca desativado")
+		return
+
+	if d["type"] == "janela" or d["type"] == "porta":
+		if d["state"] == "1":
+			print("[!] Alarme ativado")
+		else:
+			print("[!] Alarme desativado")
 
 def server_init():
 

@@ -47,6 +47,7 @@ def main():
 
 	if len(sys.argv) < 2:
 		print("[-] Arquivo de configuracao deve ser informado!")
+		return
 	else:
 		try:
 			file_config = open(sys.argv[1])
@@ -96,6 +97,7 @@ def main():
 
 
 		ctrl.ctrl(fila_prioridade, local_config)
+		
 		if not fila_prioridade.isEmpty():
 			msg = fila_prioridade.remover()
 			s.send(msg.encode())
