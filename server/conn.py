@@ -143,18 +143,6 @@ def server_init():
 					update(record[(i,p)], data1)
 					# print("[+] Comando recebido de (%s, %s)" % (i,p)," [",record[(i,p)]["nome"],"] :", data)
 					
-					# if data == "tata":
-					# 	msg="\r\33[1m"+"\33[31m "+record[(i,p)]+" left the conversation \33[0m\n"
-					# 	send_to_all(sock,msg)
-					# 	print("Client (%s, %s) is offline" % (i,p)," [",record[(i,p)],"]")
-					# 	del record[(i,p)]
-					# 	connected_list.remove(sock)
-					# 	sock.close()
-					# 	continue
-
-					# else:
-					# 	msg="\r\33[1m"+"\33[35m "+record[(i,p)]+": "+"\33[0m"+data+"\n"
-					# 	send_to_all(sock,msg)
             
                 #abrupt user exit
 				except:
