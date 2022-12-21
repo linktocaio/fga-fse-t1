@@ -16,7 +16,7 @@ def ctrl(fila_prioridade, local_config):
         msg = local_config["nome"] + ";"
         to_send = local_config["sensor_temperatura"][0]
 
-        to_send["state"] = onoff.get_TH(local_config, fila_prioridade)
+        to_send["state"] = onoff.get_TH(local_config)
         msg += str(to_send) + "\n"
         fila_prioridade.inserir(msg, 1)
 

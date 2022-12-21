@@ -37,7 +37,7 @@ def turn_ar(data_dict):
 
 	return False
 
-def get_TH(local_config, fila_prioridade):
+def get_TH(local_config):
 	pin = local_config["sensor_temperatura"][0]
 	pin = pin["gpio"]
 
