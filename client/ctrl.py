@@ -1,7 +1,6 @@
 import time
 import onoff
 
-
 time_start = time.time()
 time_temp = time.time()
 

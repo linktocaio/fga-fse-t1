@@ -1,5 +1,8 @@
 import conn
 
+temp = 0
+hum = 0
+
 def print_info(temperature, humidity, people_counter):
 	print("\n====== Dados ======\n")
 	print("Temperatura: ", temperature)
@@ -17,7 +20,7 @@ def main():
 		i = 0
 		foo = {}
 		clear()
-		print_info(0,0,0)
+		print_info(temp, hum,0)
 
 		main_list = conn.record.copy()
 

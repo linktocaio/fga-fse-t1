@@ -1,4 +1,4 @@
-import socket, select, json, sys, heapq
+import socket, select, json, sys, heapq, menu
 
 connected_list = []
 server_socket = None
@@ -49,6 +49,11 @@ def update(andar, msg):
 				for item in tipo:
 					if item["tag"] == d['tag']:
 						item['state'] = d['state']
+
+	q = d['state'].split(',')
+	if len(q) == 2:
+		menu.temp = q[0]
+		menu.hum = q[1]
 
 def server_init():
 
